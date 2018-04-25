@@ -9,7 +9,7 @@ import { LeaveRequestService } from './leaverequest.service';
   templateUrl: 'leaverequest.component.html',
 })
 export class LeaveRequestComponent{
-  
+
     LeaveType: boolean = false;
     leave ='';
     saveAsDraft: boolean;
@@ -76,7 +76,7 @@ export class LeaveRequestComponent{
     this.LeaveType=false;
         let upd = this.model;
         if (id !== null) {
-          if(this.model['status']=='draft')
+          if(this.model['status']=='0')
           {
             this.notify.notifyError('Donot cheat again');
           }
@@ -89,6 +89,7 @@ export class LeaveRequestComponent{
                 //console.log(this.LeaveType);
                 this.LeaveType = true;
                 this.changeItem(result);
+                this.DraftButton=false;
               },
               error => {
                 this.notify.notifyError(this.error);
@@ -158,7 +159,7 @@ export class LeaveRequestComponent{
         });
     } 
   sendDraftItem(id) {
-      status='pending';
+      status='1';
       this.model['status'] = status;
       let upd= this.model;
       this.LRS.update(id,upd).subscribe(
