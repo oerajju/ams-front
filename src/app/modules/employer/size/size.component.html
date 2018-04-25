@@ -1,0 +1,70 @@
+<div class="animated fadeIn row">
+    
+    <div class="col-md-6">
+        <form [formGroup]="sizeForm" (ngSubmit)="submitForm()" class="form-horizontal" novalidate>
+        <div class="card">
+        <div class="card-header">
+          <strong>Add</strong> Size
+        </div>
+        <div class="card-body">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(sizeForm.controls.emp_size)">
+              <label class="col-md-4 col-form-label" for="emp_size">No of Employees</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="No of Employees" formControlName="emp_size">
+                <validation-message [control]="sizeForm.controls.emp_size"></validation-message>
+              </div>
+            </div>
+        </div>
+            
+        <div class="card-footer">
+          <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
+          <button type="reset" class="btn btn-sm btn-danger" (click)="resetForm()"><i class="fa fa-ban"></i> Reset</button>
+        </div>
+      </div>
+    </form>
+    </div>
+    
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Size List
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" placeholder="Search" name="srch-term" type="text" [value]="searchTerm" (input)="searchTerm = $event.target.value" (keyup.enter)="search()">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="search()"><i class="fa fa-search"></i></button>
+                </span>
+                <a href="javascript:void(0)" (click)="resetFilters()"><i class="fa fa-refresh" title="Reset Filters"></i></a>
+            </div>
+            
+            <hr/>
+            
+          <table class="table table-bordered table-striped table-sm tbl-sortable">
+            <thead>
+                <tr><th>#</th><th (click)="sort('emp_size')">No of Employees<i class="fa" [ngClass]="{'fa-sort': column != 'emp_size', 'fa-sort-asc': (column == 'emp_size' && isDesc), 'fa-sort-desc': (column == 'emp_size' && !isDesc) }" aria-hidden="true"> </i></th><th> Action </th>
+</tr>
+            </thead>
+            <tbody>
+                <tr *ngFor=" let item of lists; let i= index; "><td>{{i+1}}</td><td>{{item.emp_size}}</td><td><a (click)="getUpdateItem(item.id)" href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i></a><a href="javascript:void(0)" (click)="deleteItem(item.id)" ><i class="fa fa-trash"></i></a></td></tr>
+            </tbody>
+          </table>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <page-helper [totalItems]= "pagination.total"
+                        [currentPage]="pagination.currentPage"
+                        [perPage]="pagination.perPage"
+                        [pagesToShow]="perPages"
+                        (update)= "changePerPage($event)" > </page-helper>
+                </div>
+                <div class="col-md-6">
+                    <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination>
+                </div>
+                
+            </div>
+          
+        </div>
+      </div>
+    </div>
+    
+</div>

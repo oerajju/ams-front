@@ -1,0 +1,46 @@
+<div class="modal-header">
+    <h4 class="modal-title">Manage Permissions</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <ngb-tabset>
+        <ngb-tab>
+            <ng-template ngbTabTitle>Assign Permissions <strong>({{name}})</strong></ng-template>
+            <ng-template ngbTabContent>
+                <form [formGroup] = "prmsMgmtForm" (ngSubmit)="savePermissions()" method="post">
+                    <input type="hidden" formControlName="role_id">
+                    <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let item of allPermissions">
+                        <div class="row">
+                            <div class="col-10">
+                                <h6>{{item.display_name}} <strong>({{item.name}})</strong></h6>
+                                <span class="text-muted">{{item.description}}</span>
+                            </div>
+                            <div class="col-2">
+                                <span class="form-control-sm">
+                                    <input type="checkbox" id="{{item.name}}" formControlName="{{item.id}}" >
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="form-control btn-success">
+                    </div>
+                </ul>
+                </form>
+                
+            </ng-template>
+        </ngb-tab>
+        <ngb-tab>
+            <ng-template ngbTabTitle>View All</ng-template>
+            <ng-template ngbTabContent>
+                Tree View
+            </ng-template>
+        </ngb-tab>
+    </ngb-tabset>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="activeModal.close('Close click')">Close</button>
+</div>

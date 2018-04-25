@@ -1,0 +1,100 @@
+<div class="animated fadeIn row">
+    
+    <div class="col-md-6">
+        <form [formGroup]="organizationForm" (ngSubmit)="submitForm()" class="form-horizontal" novalidate>
+        <div class="card">
+        <div class="card-header">
+          <strong>Add</strong> Organization
+        </div>
+        <div class="card-body">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(organizationForm.controls.name)">
+              <label class="col-md-4 col-form-label" for="name">Name</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Name" formControlName="name">
+                <validation-message [control]="organizationForm.controls.name"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(organizationForm.controls.phone)">
+              <label class="col-md-4 col-form-label" for="phone">Phone</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Phone" formControlName="phone">
+                <validation-message [control]="organizationForm.controls.phone"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(organizationForm.controls.email)">
+              <label class="col-md-4 col-form-label" for="email">Email</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Email" formControlName="email">
+                <validation-message [control]="organizationForm.controls.email"></validation-message>
+              </div>
+            </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(organizationForm.controls.active)">
+              <label class="col-md-4 col-form-label" for="active">Active</label>
+              <div class="col-md-8">
+                  <select class="form-control" formControlName="active">
+                      <option value="">Select Active</option>
+                      <option *ngFor=" let item of Chactive" [ngValue]="item.value">{{ item.label}}</option>
+                  </select>
+                <validation-message [control]="organizationForm.controls.active"></validation-message>
+              </div>
+            </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(organizationForm.controls.parent_id)">
+              <label class="col-md-4 col-form-label" for="parent_id">Parent</label>
+              <div class="col-md-8">
+                  <select class="form-control" formControlName="parent_id" defer>
+                      <option value="">Select Parent..</option>
+                      <option *ngFor=" let item of parents | async " [ngValue]="item.id">{{ item.name}}</option>
+                  </select>
+                <validation-message [control]="organizationForm.controls.parent_id"></validation-message>
+              </div>
+            </div>
+        </div>
+            
+        <div class="card-footer">
+          <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
+          <button type="reset" class="btn btn-sm btn-danger" (click)="resetForm()"><i class="fa fa-ban"></i> Reset</button>
+        </div>
+      </div>
+    </form>
+    </div>
+    
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Organization List
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" placeholder="Search" name="srch-term" type="text" [value]="searchTerm" (input)="searchTerm = $event.target.value" (keyup.enter)="search()">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="search()"><i class="fa fa-search"></i></button>
+                </span>
+                <a href="javascript:void(0)" (click)="resetFilters()"><i class="fa fa-refresh" title="Reset Filters"></i></a>
+            </div>
+            
+            <hr/>
+            
+          <table class="table table-bordered table-striped table-sm tbl-sortable">
+            <thead>
+                <tr><th (click)="sort('id')">Id<i class="fa" [ngClass]="{'fa-sort': column != 'id', 'fa-sort-asc': (column == 'id' && isDesc), 'fa-sort-desc': (column == 'id' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('name')">Name<i class="fa" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && isDesc), 'fa-sort-desc': (column == 'name' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('phone')">Phone<i class="fa" [ngClass]="{'fa-sort': column != 'phone', 'fa-sort-asc': (column == 'phone' && isDesc), 'fa-sort-desc': (column == 'phone' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('email')">Email<i class="fa" [ngClass]="{'fa-sort': column != 'email', 'fa-sort-asc': (column == 'email' && isDesc), 'fa-sort-desc': (column == 'email' && !isDesc) }" aria-hidden="true"> </i></th><th>Parent</th><th> Action </th>
+</tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=" let item of lists "><td>{{item.id}}</td><td>{{item.name}}</td><td>{{item.phone}}</td><td>{{item.email}}</td><td>{{item.parentname}}</td><td><a (click)="getUpdateItem(item.id)" href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i></a><a href="javascript:void(0)" (click)="deleteItem(item.id)" ><i class="fa fa-trash"></i></a></td></tr>
+            </tbody>
+          </table>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <page-helper [totalItems]= "pagination.total"
+                        [currentPage]="pagination.currentPage"
+                        [perPage]="pagination.perPage"
+                        [pagesToShow]="perPages"
+                        (update)= "changePerPage($event)" > </page-helper>
+                </div>
+                <div class="col-md-6">
+                    <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination>
+                </div>
+                
+            </div>
+          
+        </div>
+      </div>
+    </div>
+    
+</div>

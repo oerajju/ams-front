@@ -1,0 +1,116 @@
+<div class="animated fadeIn row">
+    
+    <div class="col-md-6">
+        <form [formGroup]="orgForm" (ngSubmit)="submitForm()" class="form-horizontal" novalidate>
+        <div class="card">
+        <div class="card-header">
+          <strong>Add</strong> Org
+        </div>
+        <div class="card-body">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.name)">
+              <label class="col-md-4 col-form-label" for="name">Name</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Name" formControlName="name">
+                <validation-message [control]="orgForm.controls.name"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.alt_name)">
+              <label class="col-md-4 col-form-label" for="alt_name">Alt. Name</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Alt. Name" formControlName="alt_name">
+                <validation-message [control]="orgForm.controls.alt_name"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.email)">
+              <label class="col-md-4 col-form-label" for="email">Email</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Email" formControlName="email">
+                <validation-message [control]="orgForm.controls.email"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.phone)">
+              <label class="col-md-4 col-form-label" for="phone">Phone/Mobile</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Phone/Mobile" formControlName="phone">
+                <validation-message [control]="orgForm.controls.phone"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.work_area)">
+              <label class="col-md-4 col-form-label" for="work_area">Working Area</label>
+              <div class="col-md-8"><select class="form-control" formControlName="work_area">
+                      <option value="">Select Working Area</option>
+                      <option *ngFor=" let item of Chwork_area" [ngValue]="item">{{ item}}</option>
+                  </select>
+                <validation-message [control]="orgForm.controls.work_area"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.org_size)">
+              <label class="col-md-4 col-form-label" for="org_size">Organization Size</label>
+              <div class="col-md-8"><select class="form-control" formControlName="org_size">
+                      <option value="">Select Organization Size</option>
+                      <option *ngFor=" let item of Chorg_size" [ngValue]="item">{{ item}}</option>
+                  </select>
+                <validation-message [control]="orgForm.controls.org_size"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.cname)">
+              <label class="col-md-4 col-form-label" for="cname">Contact Person Name</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Contact Person Name" formControlName="cname">
+                <validation-message [control]="orgForm.controls.cname"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.cemail)">
+              <label class="col-md-4 col-form-label" for="cemail">Cont Person Email</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Cont Person Email" formControlName="cemail">
+                <validation-message [control]="orgForm.controls.cemail"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(orgForm.controls.cphone)">
+              <label class="col-md-4 col-form-label" for="cphone">Contact Person Phone</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Contact Person Phone" formControlName="cphone">
+                <validation-message [control]="orgForm.controls.cphone"></validation-message>
+              </div>
+            </div>
+        </div>
+            
+        <div class="card-footer">
+          <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
+          <button type="reset" class="btn btn-sm btn-danger" (click)="resetForm()"><i class="fa fa-ban"></i> Reset</button>
+        </div>
+      </div>
+    </form>
+    </div>
+    
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Org List
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" placeholder="Search" name="srch-term" type="text" [value]="searchTerm" (input)="searchTerm = $event.target.value" (keyup.enter)="search()">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="search()"><i class="fa fa-search"></i></button>
+                </span>
+                <a href="javascript:void(0)" (click)="resetFilters()"><i class="fa fa-refresh" title="Reset Filters"></i></a>
+            </div>
+            
+            <hr/>
+            
+          <table class="table table-bordered table-striped table-sm tbl-sortable">
+            <thead>
+                <tr><th (click)="sort('name')">Name<i class="fa" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && isDesc), 'fa-sort-desc': (column == 'name' && !isDesc) }" aria-hidden="true"> </i></th><th>Alt. Name</th><th (click)="sort('email')">Email<i class="fa" [ngClass]="{'fa-sort': column != 'email', 'fa-sort-asc': (column == 'email' && isDesc), 'fa-sort-desc': (column == 'email' && !isDesc) }" aria-hidden="true"> </i></th><th>Phone/Mobile</th><th (click)="sort('work_area')">Working Area<i class="fa" [ngClass]="{'fa-sort': column != 'work_area', 'fa-sort-asc': (column == 'work_area' && isDesc), 'fa-sort-desc': (column == 'work_area' && !isDesc) }" aria-hidden="true"> </i></th><th>Organization Size</th><th (click)="sort('cname')">Contact Person Name<i class="fa" [ngClass]="{'fa-sort': column != 'cname', 'fa-sort-asc': (column == 'cname' && isDesc), 'fa-sort-desc': (column == 'cname' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('cemail')">Cont Person Email<i class="fa" [ngClass]="{'fa-sort': column != 'cemail', 'fa-sort-asc': (column == 'cemail' && isDesc), 'fa-sort-desc': (column == 'cemail' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('cphone')">Contact Person Phone<i class="fa" [ngClass]="{'fa-sort': column != 'cphone', 'fa-sort-asc': (column == 'cphone' && isDesc), 'fa-sort-desc': (column == 'cphone' && !isDesc) }" aria-hidden="true"> </i></th><th> Action </th>
+</tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=" let item of lists "><td>{{item.name}}</td><td>{{item.alt_name}}</td><td>{{item.email}}</td><td>{{item.phone}}</td><td>{{item.work_area}}</td><td>{{item.org_size}}</td><td>{{item.cname}}</td><td>{{item.cemail}}</td><td>{{item.cphone}}</td><td><a (click)="getUpdateItem(item.id)" href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i></a><a href="javascript:void(0)" (click)="deleteItem(item.id)" ><i class="fa fa-trash"></i></a></td></tr>
+            </tbody>
+          </table>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <page-helper [totalItems]= "pagination.total"
+                        [currentPage]="pagination.currentPage"
+                        [perPage]="pagination.perPage"
+                        [pagesToShow]="perPages"
+                        (update)= "changePerPage($event)" > </page-helper>
+                </div>
+                <div class="col-md-6">
+                    <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination>
+                </div>
+                
+            </div>
+          
+        </div>
+      </div>
+    </div>
+    
+</div>

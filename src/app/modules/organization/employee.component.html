@@ -1,0 +1,150 @@
+<div class="animated fadeIn row">
+    
+    <div class="col-md-6">
+        <form [formGroup]="employeeForm" (ngSubmit)="submitForm()" class="form-horizontal" novalidate>
+        <div class="card">
+        <div class="card-header">
+          <strong>Add</strong> Employee
+        </div>
+        <div class="card-body">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.orgid)">
+              <label class="col-md-4 col-form-label" for="firstname">Organization</label>
+              <div class="col-md-8">
+                  <select class="form-control" formControlName="orgid" (change)="getEmployees($event.target.value)">
+                      <option value="">Select Organization</option>
+                      <option *ngFor=" let item of orgs | async " [value]="item.id">{{ item.name}}</option>
+                  </select>
+                <validation-message [control]="employeeForm.controls.orgid"></validation-message>
+              </div>
+            </div>
+            
+            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.firstname)">
+              <label class="col-md-4 col-form-label" for="firstname">Firstname</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Firstname" formControlName="firstname">
+                <validation-message [control]="employeeForm.controls.firstname"></validation-message>
+              </div>
+            </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.midname)">
+              <label class="col-md-4 col-form-label" for="midname">Midname</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Midname" formControlName="midname">
+                <validation-message [control]="employeeForm.controls.midname"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.lastname)">
+              <label class="col-md-4 col-form-label" for="lastname">Lastname</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Lastname" formControlName="lastname">
+                <validation-message [control]="employeeForm.controls.lastname"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.address)">
+              <label class="col-md-4 col-form-label" for="address">Address</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Address" formControlName="address">
+                <validation-message [control]="employeeForm.controls.address"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.phone)">
+              <label class="col-md-4 col-form-label" for="phone">Phone</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Phone" formControlName="phone">
+                <validation-message [control]="employeeForm.controls.phone"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.email)">
+              <label class="col-md-4 col-form-label" for="email">Email</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Email" formControlName="email">
+                <validation-message [control]="employeeForm.controls.email"></validation-message>
+              </div>
+            </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.active)">
+              <label class="col-md-4 col-form-label" for="active">Active</label>
+              <div class="col-md-8">
+                  <select class="form-control" formControlName="active">
+                      <option value="">Select Active</option>
+                      <option *ngFor=" let item of Chactive" [ngValue]="item.value">{{ item.label}}</option>
+                  </select>
+                <validation-message [control]="employeeForm.controls.active"></validation-message>
+              </div>
+            </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.reports_to)">
+              <label class="col-md-4 col-form-label" for="reports_to">Reports To</label>
+              <div class="col-md-8">
+                  <select class="form-control" formControlName="reports_to">
+                      <option value="0">Select Reports To</option>
+                      <option *ngFor=" let item of Chreports_to | async " [ngValue]="item.id">{{ item.firstname+' '+item.midname+' '+item.lastname }}</option>
+                  </select>
+                <validation-message [control]="employeeForm.controls.reports_to"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.cnt_start_date)">
+              <label class="col-md-4 col-form-label" for="cnt_start_date">Contract Start Sate</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Contract Start Sate" formControlName="cnt_start_date">
+                <validation-message [control]="employeeForm.controls.cnt_start_date"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.cnt_term_date)">
+              <label class="col-md-4 col-form-label" for="cnt_term_date">Contract End Date</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Contract End Date" formControlName="cnt_term_date">
+                <validation-message [control]="employeeForm.controls.cnt_term_date"></validation-message>
+              </div>
+            </div>
+        </div>
+            
+        <div class="card-footer">
+          <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
+          <button type="reset" class="btn btn-sm btn-danger" (click)="resetForm()"><i class="fa fa-ban"></i> Reset</button>
+        </div>
+      </div>
+    </form>
+    </div>
+    
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Employee List
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" placeholder="Search" name="srch-term" type="text" [value]="searchTerm" (input)="searchTerm = $event.target.value" (keyup.enter)="search()">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="search()"><i class="fa fa-search"></i></button>
+                </span>
+                <a href="javascript:void(0)" (click)="resetFilters()"><i class="fa fa-refresh" title="Reset Filters"></i></a>
+            </div>
+            
+            <hr/>
+            
+          <table class="table table-bordered table-striped table-sm tbl-sortable">
+            <thead>
+                <tr>
+                    <th (click)="sort('id')">Id<i class="fa" [ngClass]="{'fa-sort': column != 'id', 'fa-sort-asc': (column == 'id' && isDesc), 'fa-sort-desc': (column == 'id' && !isDesc) }" aria-hidden="true"> </i></th>
+                    <th (click)="sort('firstname')">Name<i class="fa" [ngClass]="{'fa-sort': column != 'firstname', 'fa-sort-asc': (column == 'firstname' && isDesc), 'fa-sort-desc': (column == 'firstname' && !isDesc) }" aria-hidden="true"> </i></th>
+                    <th (click)="sort('phone')">Phone<i class="fa" [ngClass]="{'fa-sort': column != 'phone', 'fa-sort-asc': (column == 'phone' && isDesc), 'fa-sort-desc': (column == 'phone' && !isDesc) }" aria-hidden="true"> </i></th>
+                    <th (click)="sort('email')">Email<i class="fa" [ngClass]="{'fa-sort': column != 'email', 'fa-sort-asc': (column == 'email' && isDesc), 'fa-sort-desc': (column == 'email' && !isDesc) }" aria-hidden="true"> </i></th>
+                    <th >Reports To</th>
+                    <th> Action </th>
+</tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=" let item of lists ">
+                  <td>{{item.id}}</td>
+                  <td>{{item.firstname+' '+item.midname+' '+item.lastname}}</td>
+                  <td>{{item.phone}}</td>
+                  <td>{{item.email}}</td>
+                  <td>{{item.reports_to}}</td>
+                  <td><a (click)="getUpdateItem(item.id)" href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i></a><a href="javascript:void(0)" (click)="deleteItem(item.id)" ><i class="fa fa-trash"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <page-helper [totalItems]= "pagination.total"
+                        [currentPage]="pagination.currentPage"
+                        [perPage]="pagination.perPage"
+                        [pagesToShow]="perPages"
+                        (update)= "changePerPage($event)" > </page-helper>
+                </div>
+                <div class="col-md-6">
+                    <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination>
+                </div>
+                
+            </div>
+          
+        </div>
+      </div>
+    </div>
+    
+</div>

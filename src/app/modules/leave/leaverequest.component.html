@@ -1,0 +1,105 @@
+<div class="animated fadeIn row">
+    
+    <div class="col-md-6">
+        <form [formGroup]="leaveForm"  class="form-horizontal" novalidate>
+        <div class="card">
+        <div class="card-header">
+          <strong>Create</strong> Leave Form
+        </div>
+        <div class="card-body">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(leaveForm.controls.leave_type)" >
+              <label class="col-md-4 col-form-label" for="leave_type">Leave Type</label>
+              <div class="col-md-8"><select class="form-control" formControlName="leave_type">
+             <option value="" [selected]="LeaveType">{{leave_type[0].label}}</option>
+             <ng-container *ngFor=" let item of leave_type">
+              <option  [value]="item.value" *ngIf="item.value != ''">{{ item.label}}</option></ng-container>
+              </select>
+                <validation-message [control]="leaveForm.controls.leave_type"></validation-message> 
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(leaveForm.controls.reason)">
+
+              <label class="col-md-4 col-form-label" for="reason">Reason</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Leave Description" formControlName="reason">
+                <validation-message [control]="leaveForm.controls.reason"></validation-message>
+              </div>
+            </div>
+            <br/>
+            <div class="row">
+            <div class="col-md-6 pull-left">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(leaveForm.controls.date_from)">
+              <label class="col-md-4 col-form-label" for="date_from">Date From:</label>
+              <div class="col-md-8"><input type="date" class="form-control" formControlName="date_from">
+                <validation-message [control]="leaveForm.controls.date_from"></validation-message>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 pull-right">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(leaveForm.controls.date_to)">
+              <label class="col-md-4 col-form-label" for="date_to">Date To:</label>
+              <div class="col-md-8"><input type="date" class="form-control" formControlName="date_to">
+                <validation-message [control]="leaveForm.controls.date_to"></validation-message>
+              </div>
+            </div>
+          </div>
+        </div> 
+        </div>
+          
+        <div class="card-footer form-control">
+      <button type="button" class="btn btn-sm btn-primary" ng-model="status" (click)="submitForm('0')" [hidden]="DraftButton"><i class="fa fa-dot-circle-o" ></i> Save To Draft</button>
+
+          <button type="submit" class="btn btn-sm btn-primary" ng-model="status" (click)="submitForm('1')"><i class="fa fa-dot-circle-o"></i> Send</button>
+          <button type="reset" class="btn btn-sm btn-danger pull-right" (click)="resetForm()"><i class="fa fa-ban"></i>Reset</button>
+        </div>
+      </div>
+    </form>
+    </div>
+    
+  <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Leave List
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" placeholder="Search" name="srch-term" type="text" [value]="searchTerm" (input)="searchTerm = $event.target.value" (keyup.enter)="search()" >
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="search()"><i class="fa fa-search"></i></button>
+                </span>
+                <a href="javascript:void(0)" (click)="resetFilters()"><i class="fa fa-refresh" title="Reset Filters"></i></a>
+            </div>
+            
+            <hr/>
+            
+          <table class="table table-bordered table-striped table-sm tbl-sortable">
+            <thead>
+                <tr><th>#</th><th (click)="sort('leave_type')">Type <i class="fa" [ngClass]="{'fa-sort': column != 'leave_type', 'fa-sort-asc': (column == 'leave_type' && isDesc), 'fa-sort-desc': (column == 'leave_type' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('date_from')">From <i class="fa" [ngClass]="{'fa-sort': column != 'date_from', 'fa-sort-asc': (column == 'date_from' && isDesc), 'fa-sort-desc': (column == 'date_from' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('date_to')">To <i class="fa" [ngClass]="{'fa-sort': column != 'date_to', 'fa-sort-asc': (column == 'date_to' && isDesc), 'fa-sort-desc': (column == 'date_to' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('day_count')">Days <i class="fa" [ngClass]="{'fa-sort': column != 'day_count', 'fa-sort-asc': (column == 'day_count' && isDesc), 'fa-sort-desc': (column == 'day_count' && !isDesc) }"></i></th><th (click)="sort('day_count')">Status <i class="fa" [ngClass]="{'fa-sort': column != 'status', 'fa-sort-asc': (column == 'status' && isDesc), 'fa-sort-desc': (column == 'status' && !isDesc) }"></i></th><th colspan="3">Action</th>
+</tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=" let item of lists; let i = index; "><td>{{i+1}}</td><td><ng-container *ngFor=" let leave of leave_type"><ng-template [ngIf]="leave.value==item.leave_type">{{leave.label}}</ng-template></ng-container></td><td>{{item.date_from}}</td><td>{{item.date_to}}</td>
+                <td>{{item.day_count}}</td><td>
+                <ng-container *ngFor="let st of status"><ng-template [ngIf]="st.value==item.status">{{st.label}}</ng-template></ng-container></td><td *ngIf="item.status==leave; then this_content; else other_content"></td><ng-template #this_content><td><a (click)="getUpdateItem(item.id)" href="javascript:void(0)"><i class="fa fa-edit alert-danger" aria-hidden="true" title="Edit before send"></i></a></td><td><a (click) ="getEditDraftItem(item.id)" href="javascript:void(0)"><i class="fa fa-paper-plane alert-danger" aria-hidden="true" title="Send"></i></a>
+</td></ng-template><ng-template #other_content><td colspan="2" align="center"><a><i class="fa fa-check success" aria-hidden="true" style="color:green;" title="Leave Requested"></i>
+</a></td></ng-template><td><a href="javascript:void(0)" (click)="deleteItem(item.id)" ><i class="fa fa-trash" title="Delete"></i></a></td></tr>
+            </tbody>
+          </table>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <page-helper [totalItems]= "pagination.total"
+                        [currentPage]="pagination.currentPage"
+                        [perPage]="pagination.perPage"
+                        [pagesToShow]="perPages"
+                        (update)= "changePerPage($event)" > </page-helper>
+                </div>
+                <div class="col-md-6">
+                    <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination>
+                </div>
+                
+            </div>
+          
+        </div>
+      </div>
+    </div>
+</div>
+  
+    

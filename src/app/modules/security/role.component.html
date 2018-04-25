@@ -1,0 +1,80 @@
+<div class="animated fadeIn row">
+    <router-outlet></router-outlet>
+    <div class="col-md-6">
+        <form [formGroup]="roleForm" (ngSubmit)="submitForm()" class="form-horizontal" novalidate>
+        <div class="card">
+        <div class="card-header">
+          <strong>Add</strong> Role
+        </div>
+        <div class="card-body">
+            <div class="form-group row" [ngClass]="vs.getGroupClass(roleForm.controls.name)">
+              <label class="col-md-4 col-form-label" for="name">Name</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Name" formControlName="name">
+                <validation-message [control]="roleForm.controls.name"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(roleForm.controls.display_name)">
+              <label class="col-md-4 col-form-label" for="display_name">Display Name</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Display Name" formControlName="display_name">
+                <validation-message [control]="roleForm.controls.display_name"></validation-message>
+              </div>
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(roleForm.controls.description)">
+              <label class="col-md-4 col-form-label" for="description">Description</label>
+              <div class="col-md-8"><input type="text" class="form-control" placeholder="Description" formControlName="description">
+                <validation-message [control]="roleForm.controls.description"></validation-message>
+              </div>
+            </div>
+        </div>
+            
+        <div class="card-footer">
+          <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
+          <button type="reset" class="btn btn-sm btn-danger" (click)="resetForm()"><i class="fa fa-ban"></i> Reset</button>
+        </div>
+      </div>
+    </form>
+    </div>
+    
+    
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Role List
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input class="form-control" placeholder="Search" name="srch-term" type="text" [value]="searchTerm" (input)="searchTerm = $event.target.value" (keyup.enter)="search()">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" (click)="search()"><i class="fa fa-search"></i></button>
+                </span>
+                <a href="javascript:void(0)" (click)="resetFilters()"><i class="fa fa-refresh" title="Reset Filters"></i></a>
+            </div>
+            
+            <hr/>
+            
+          <table class="table table-bordered table-striped table-sm tbl-sortable">
+            <thead>
+                <tr><th>#</th><th (click)="sort('name')">Name<i class="fa" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && isDesc), 'fa-sort-desc': (column == 'name' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('display_name')">Display Name<i class="fa" [ngClass]="{'fa-sort': column != 'display_name', 'fa-sort-asc': (column == 'display_name' && isDesc), 'fa-sort-desc': (column == 'display_name' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('description')">Description<i class="fa" [ngClass]="{'fa-sort': column != 'description', 'fa-sort-asc': (column == 'description' && isDesc), 'fa-sort-desc': (column == 'description' && !isDesc) }" aria-hidden="true"> </i></th><th> Action </th>
+</tr>
+            </thead>
+            <tbody>
+              <tr *ngFor=" let item of lists; let i = index; "><td>{{i+1}}</td><td>{{item.name}}</td><td>{{item.display_name}}</td><td>{{item.description}}</td><td><a (click)="getUpdateItem(item.id)" href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i></a><a href="javascript:void(0)" (click)="deleteItem(item.id)" ><i class="fa fa-trash"></i></a><a href="javascript:void(0)" (click)="managePermissions(item.id,item.name)" ><i class="fa fa-gears"></i></a></td></tr>
+            </tbody>
+          </table>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <page-helper [totalItems]= "pagination.total"
+                        [currentPage]="pagination.currentPage"
+                        [perPage]="pagination.perPage"
+                        [pagesToShow]="perPages"
+                        (update)= "changePerPage($event)" > </page-helper>
+                </div>
+                <div class="col-md-6">
+                    <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination>
+                </div>
+                
+            </div>
+          
+        </div>
+      </div>
+    </div>
+    
+</div>
