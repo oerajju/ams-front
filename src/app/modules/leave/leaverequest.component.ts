@@ -9,6 +9,7 @@ import { LeaveRequestService } from './leaverequest.service';
   templateUrl: 'leaverequest.component.html',
 })
 export class LeaveRequestComponent{
+  
     LeaveType: boolean = false;
     leave ='';
     saveAsDraft: boolean;
