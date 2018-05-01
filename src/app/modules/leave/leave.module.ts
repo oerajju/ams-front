@@ -8,7 +8,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from '../../shared/shared.module';
 import { LeaveRequestComponent} from './leaverequest.component';
 import { LeaveApprovalComponent } from './leaveapproval.component';
-//import { LeaveApprovalService} from './leaveapproval.service';
+import { LeaveApprovalService} from './leaveapproval.service';
 import { LeaveRequestService } from './leaverequest.service';
 
 const routes : Routes = [
@@ -41,7 +41,7 @@ const routes : Routes = [
     declarations : [
         LeaveRequestComponent, LeaveApprovalComponent
     ],
-    providers: [LeaveRequestService],
+    providers: [LeaveRequestService,LeaveApprovalService],
     // entryComponents: [
     //     RoleMgmtComponent, UserMgmtComponent
     // ]

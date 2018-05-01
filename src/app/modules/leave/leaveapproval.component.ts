@@ -1,20 +1,52 @@
 import { Component, OnInit, Input } from '@angular/core';
 //import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-//import { NotificationService } from '../../notification.service';
+import { NotificationService } from '../../notification.service';
 //import { ValidationService } from '../../validation.service';
 //import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-//import { LeaveApprovalService } from './leaveapproval.service';
+import { LeaveApprovalService } from './leaveapproval.service';
 
 @Component({
    //moduleId: module.id,
   templateUrl: 'leaveapproval.component.html'
 })
 export class LeaveApprovalComponent{
+	lists:any;
+	perPages = [10,20,50,100];
+    pagination = {
+        total:0,
+        currentPage:0,
+        perPage:0
+    };
+    searchTerm: string = '';
+    column : string = '';
+    isDesc: boolean = false;
 
+
+ constructor(private notify: NotificationService,
+	private LAS: LeaveApprovalService
+		) {
+		}
 
 ngOnInit () {
-
+this.getList();
 }
+  getList() {
+      let page = 1;
+      if (this.pagination.currentPage !== 0) {
+          page = this.pagination.currentPage;
+      }
+      this.LAS.getList(this.pagination.perPage, page, this.searchTerm, this.column, this.isDesc).subscribe(
+        (result: any) => {
+            this.lists = result.data;
+            this.pagination.total = result.total;
+            this.pagination.currentPage = result.current_page;
+             console.log(result);
+        },
+        error => {
+            this.notify.notifyError(error.message);
+        }
+      );
+  }
 
 
 
@@ -35,16 +67,7 @@ ngOnInit () {
 //     isDesc = false;
 //     vs = ValidationService;
 
-//   constructor(private notify: NotificationService,
-//     private fb: FormBuilder,
-//     private RS: RoleService,
-//     private modal: NgbModal
-//     ) {
-//       this.roleForm = this.fb.group({name: ['', [Validators.required]],
-//           display_name: [''],
-//           description: ['']
-//      });
-//   }
+ 
   // ngOnInit () {
       // this.pagination.perPage = this.perPages[0];
   // }
@@ -129,23 +152,6 @@ ngOnInit () {
 //         );
 //     }
 
-//   getList() {
-//       let page = 1;
-//       if (this.pagination.currentPage !== 0) {
-//           page = this.pagination.currentPage;
-//       }
-//       this.RS.getList(this.pagination.perPage, page, this.searchTerm, this.column, this.isDesc).subscribe(
-//         (result: any) => {
-//             this.lists = result.data;
-//             this.pagination.total = result.total;
-//             this.pagination.currentPage = result.current_page;
-//             /// console.log(result);
-//         },
-//         error => {
-//             this.notify.notifyError(error.message);
-//         }
-//       );
-//   }
 
 //   changePerPage (perPage: number) {
 //       this.pagination.perPage = perPage;

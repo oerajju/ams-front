@@ -1,4 +1,4 @@
-<div class="animated fadeIn row">
+<div class="animated fadeIn row center">
     
     
  <div class="col-md-12">
@@ -19,11 +19,11 @@
             
           <table class="table table-bordered table-striped table-sm tbl-sortable">
             <thead>
-                <tr><th>#</th><th>Name<i class="fa" aria-hidden="true"> </i></th><th>Post<i class="fa"  aria-hidden="true"> </i></th><th>Requested Date from<i class="fa" aria-hidden="true"> </i></th><th>Requested Date To</th><th>Leave Type</th><th> Action </th>
+                <tr><th>#</th><th>Name<i class="fa" aria-hidden="true"> </i></th><th>Post<i class="fa"  aria-hidden="true"> </i></th><th>Date from<i class="fa" aria-hidden="true"> </i></th><th>Date To</th><th>Leave Type</th><th colspan="3">Action</th>
 </tr>
             </thead>
             <tbody>
-              <tr><td></td><td></td><td></td><td></td><td><a href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i></a><a href="javascript:void(0)"><i class="fa fa-trash"></i></a><a href="javascript:void(0)"><i class="fa fa-gears"></i></a></td></tr>
+              <tr *ngFor=" let item of lists; let i = index; "><td>{{i+1}}</td><td></td><td></td><td>{{item.date_from}}</td><td>{{item.date_to}}</td><td></td><td><a href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i> View</a></td><td><a href="javascript:void(0)"><i class="fa fa-check success" aria-hidden="true" style="color:green;"></i> Approve</a></td><td><a href="javascript:void(0)"><i class="fa fa-remove" style="color:darkred;"></i> Reject</a></td></tr>
             </tbody>
           </table>
             <div class="row">

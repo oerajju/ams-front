@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-//import {ApiService} from '../../api.service';
+import {ApiService} from '../../api.service';
 
 @Injectable()
-export class LeaveApprovalservice {
-//     path = 'security/role';
+export class LeaveApprovalService {
+    path = 'leave/leave-approval';
 
-// constructor(private api: ApiService) {}
+constructor(private api: ApiService) {}
 
-//     getList(perPage, page, searchTerm?, sortKey?, sortDir?) {
-//         return this.api.getList(this.path, perPage, page, searchTerm, sortKey, sortDir);
-//     }
+    getList(perPage, page, searchTerm?, sortKey?, sortDir?) {
+        return this.api.getList(this.path, perPage, page, searchTerm, sortKey, sortDir);
+    }
 //     create(data) {
 //         return this.api.create(this.path, data);
 //     }
