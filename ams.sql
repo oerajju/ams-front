@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.7.9
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2018 at 03:40 AM
--- Server version: 5.7.16-log
--- PHP Version: 7.0.13
+-- Generation Time: May 01, 2018 at 12:37 PM
+-- Server version: 10.1.31-MariaDB
+-- PHP Version: 7.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -20,90 +22,35 @@ SET time_zone = "+00:00";
 -- Database: `ams`
 --
 
-DELIMITER $$
---
--- Functions
---
-CREATE DEFINER=`root`@`localhost` FUNCTION `engdate` (`nepdate` VARCHAR(10) CHARSET utf8) RETURNS VARCHAR(10) CHARSET utf8 NO SQL
-    COMMENT 'converts nepali date to english date'
-BEGIN
-	declare engyear1,engmonth1,engday1,transitnepday1,transityear1,transitmonth1 int;
-    
-	declare pramyear,prammonth,pramday int;
-    
-	declare ret varchar(10);
-    
-	set pramyear=substring_index(nepdate,'/',1);
-	set prammonth= substring_index(substring_index(nepdate,'/',2),'/',-1);
-	set pramday = substring_index(nepdate,'/',-1);
-    
-    select engyear,engmonth,engday,transitnepday,transityear,transitmonth
-		into engyear1,engmonth1,engday1,transitnepday1,transityear1,transitmonth1
-        from date_meta where years=pramyear and months=prammonth;
-    
-	 if (transitnepday1 <= pramday) then 
-	 	set ret = concat(transitmonth1,'/',(1 + pramday - transitnepday1), '/',transityear1);
-	 else
-	 	set ret = concat(engmonth1, '/' ,(engday1 + pramday - 1), '/' ,engyear1);
-     end if;
-    
-	return ret;
-end$$
+-- --------------------------------------------------------
 
-CREATE DEFINER=`root`@`localhost` FUNCTION `nepdate` (`engdate` VARCHAR(10) CHARSET utf8) RETURNS VARCHAR(10) CHARSET utf8 NO SQL
-    COMMENT 'converts english date in nepali date'
-BEGIN
-	declare years1 ,months1 , weekdays1 ,maxday1 ,engyear1 ,engmonth1 ,engday1 ,transitnepday1 ,transityear1 ,transitmonth1 int;
-	declare pramyear ,prammonth ,pramday int;
-    declare flag int;
-	declare ret varchar(10);
-    
-    declare mstring varchar(2);
-    declare dstring varchar(2);
-    
-    set pramyear=substring_index(engdate,'-',1);
-	set prammonth= substring_index(substring_index(engdate,'-',2),'-',-1);
-	set pramday = substring_index(engdate,'-',-1);
-	
-	set flag=0;
-    
-	if (select ((maxday-transitnepday)+1) from date_meta where transityear=pramyear and transitmonth=prammonth) < pramday then
-		set prammonth = prammonth+1;
-		if (prammonth > 12) then
-			set prammonth=1;
-			set pramyear=pramyear+1;
-		end if;
-		set flag=1;
-	end if;
-    
-	select years,months,weekdays,maxday,engyear,engmonth,engday,transitnepday,transityear,transitmonth
-		into years1 ,months1 , weekdays1 ,maxday1 ,engyear1 ,engmonth1 ,engday1 ,transitnepday1 ,transityear1 ,transitmonth1
-		from date_meta where transityear=pramyear and transitmonth=prammonth;
-        
-	if months1<10 then
-		set mstring=concat('0',months1);
-	else
-		set mstring=cast(months1 as char);
-	end if;
-    
-	set ret = concat(years1 , '/', mstring , '/');
-    
-	if flag=1 then
-		set flag=((pramday-engday1)+1);
-	else
-		set flag=(transitnepday1+pramday-1);
-	end if;
-	
-	if flag<10 then
-		set dstring=concat('0', flag);
-	else
-		set dstring=cast(flag as char);
-    end if;
-    set ret=concat(ret,dstring);
-	return ret;
-end$$
+--
+-- Table structure for table `admin_district`
+--
 
-DELIMITER ;
+CREATE TABLE `admin_district` (
+  `districtid` decimal(11,0) NOT NULL,
+  `districtid_old` varchar(50) DEFAULT NULL,
+  `code` varchar(50) DEFAULT NULL,
+  `cbscode` decimal(18,0) DEFAULT NULL,
+  `adminlevel` int(11) NOT NULL,
+  `provinceid` decimal(18,0) DEFAULT NULL,
+  `zoneid` varchar(50) DEFAULT NULL,
+  `thm` char(1) DEFAULT NULL,
+  `code_fcgo` varchar(2) DEFAULT NULL,
+  `districtvdc` decimal(18,0) DEFAULT NULL,
+  `geoid` decimal(18,0) DEFAULT NULL,
+  `definedcd` varchar(20) NOT NULL,
+  `nameen` varchar(100) NOT NULL,
+  `namenp` varchar(500) DEFAULT NULL,
+  `shornameen` varchar(100) DEFAULT NULL,
+  `shortnamenp` varchar(500) DEFAULT NULL,
+  `iseqaffected` int(11) NOT NULL,
+  `approved` int(11) NOT NULL,
+  `disabled` int(11) NOT NULL,
+  `enterby` varchar(50) NOT NULL,
+  `entrydate` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1454,12 +1401,100 @@ CREATE TABLE `employee` (
   `phone` varchar(100) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   `active` tinyint(4) NOT NULL DEFAULT '0',
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
-  `reports_to` int(11) DEFAULT NULL,
-  `cnt_start_date` int(11) DEFAULT NULL,
-  `cnt_term_date` int(11) DEFAULT NULL
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `reports_to` int(11) DEFAULT '0',
+  `cnt_start_date` int(11) DEFAULT '0',
+  `cnt_term_date` int(11) DEFAULT '0',
+  `orgid` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `employee`
+--
+
+INSERT INTO `employee` (`id`, `firstname`, `midname`, `lastname`, `address`, `phone`, `email`, `active`, `created_at`, `updated_at`, `reports_to`, `cnt_start_date`, `cnt_term_date`, `orgid`) VALUES
+(1, 'bhim', 'sh', 'sharm', 'kathmandu nepal', '2323423', 'e@mailc.com', 1, '2018-03-01 12:01:35', '2018-03-01 06:16:35', 0, 0, 0, 1),
+(2, 'bh', 'sh', 'ls', 'ad', 'ph', 'em@dm.com', 0, '2018-03-01 12:03:07', '2018-03-01 06:18:07', 3, 0, 0, 1),
+(3, 'Sangita', '', 'Sharma', 'kathmandu nepal', '2323423', 'e@mailc.com', 0, '2018-03-01 12:45:35', '2018-03-01 07:00:35', 1, 0, 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `emp_machine`
+--
+
+CREATE TABLE `emp_machine` (
+  `id` int(11) NOT NULL,
+  `org_id` int(11) NOT NULL,
+  `machine_id` int(11) NOT NULL,
+  `emp_id` int(11) NOT NULL,
+  `machine_userid` int(11) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `start_date` int(11) NOT NULL DEFAULT '0',
+  `expired_date` int(11) DEFAULT NULL,
+  `remarks` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `emp_machine`
+--
+
+INSERT INTO `emp_machine` (`id`, `org_id`, `machine_id`, `emp_id`, `machine_userid`, `status`, `start_date`, `expired_date`, `remarks`) VALUES
+(1, 1, 2, 3, 123, 1, 1523639580, NULL, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `leave_request`
+--
+
+CREATE TABLE `leave_request` (
+  `id` int(11) NOT NULL,
+  `emp_id` varchar(255) NOT NULL,
+  `leave_type` varchar(15) NOT NULL,
+  `reason` varchar(255) NOT NULL,
+  `date_from` date NOT NULL,
+  `date_to` date NOT NULL,
+  `day_count` int(2) NOT NULL,
+  `status` varchar(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `leave_request`
+--
+
+INSERT INTO `leave_request` (`id`, `emp_id`, `leave_type`, `reason`, `date_from`, `date_to`, `day_count`, `status`) VALUES
+(49, '1', '1', 'aaaaa', '2018-04-27', '2018-04-30', 4, '1'),
+(50, '1', '1', 'I feel bored today', '2018-04-26', '2018-04-30', 5, '0'),
+(51, '1', '2', 'asdssd', '2018-05-09', '2018-05-16', 8, '1'),
+(52, '1', '2', 'sdsafd', '2018-05-29', '2018-06-05', 8, '0');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `machine`
+--
+
+CREATE TABLE `machine` (
+  `id` int(11) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `machine_id` varchar(200) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `expired_on` date DEFAULT NULL,
+  `expired_on_int` int(11) NOT NULL DEFAULT '0',
+  `remarks` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `machine`
+--
+
+INSERT INTO `machine` (`id`, `name`, `machine_id`, `status`, `created_at`, `updated_at`, `expired_on`, `expired_on_int`, `remarks`) VALUES
+(1, 'Machine On Ward No 1', '12343443243', 1, '2018-03-03 03:25:24', '2018-03-03 03:25:24', NULL, 0, ''),
+(2, 'BNAPA Machine 1', '12345566', 1, '2018-04-11 14:24:44', '2018-04-11 14:24:44', NULL, 0, '');
 
 -- --------------------------------------------------------
 
@@ -1492,14 +1527,68 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 CREATE TABLE `organization` (
   `id` int(11) NOT NULL,
   `name` varchar(200) NOT NULL,
-  `address` varchar(250) NOT NULL,
   `phone` varchar(100) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
+  `active` tinyint(4) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `parent_id` int(11) NOT NULL DEFAULT '0',
+  `parent_path` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `organization`
+--
+
+INSERT INTO `organization` (`id`, `name`, `phone`, `email`, `active`, `created_at`, `updated_at`, `parent_id`, `parent_path`) VALUES
+(1, 'Baglung Nagarpalika', '4323452443', 'bg@ng.com', 1, '2018-02-22 14:18:59', '2018-02-22 08:10:01', 0, '1'),
+(2, 'Ba.Na.Pa Ward No.1', '987897', 'admin@admin.com', 1, '2018-02-22 16:36:51', '2018-02-22 10:51:51', 1, '1.2'),
+(3, 'Ba.Na.Pa. Ward No. 2', 'jasldj', 'ladjlkj@laj.com', 1, '2018-02-24 17:51:13', '2018-02-24 12:06:13', 2, '1.2.3'),
+(9, 'off2 ', 'jasldj', 'ladjlkj@laj.com', 1, '2018-02-26 18:36:53', '2018-02-26 12:51:53', 3, '1.2.3.9');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `organization_str`
+--
+
+CREATE TABLE `organization_str` (
+  `id` int(11) NOT NULL,
+  `org_id` int(11) NOT NULL,
+  `parent_path` varchar(200) DEFAULT NULL,
+  `name` varchar(200) NOT NULL,
   `active` tinyint(4) NOT NULL DEFAULT '0',
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   `parent_id` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `org_machine`
+--
+
+CREATE TABLE `org_machine` (
+  `id` int(11) NOT NULL,
+  `org_id` int(11) NOT NULL,
+  `machine_id` varchar(200) NOT NULL,
+  `remarks` varchar(200) DEFAULT NULL,
+  `from_date_int` int(11) NOT NULL DEFAULT '0',
+  `to_date_int` int(11) DEFAULT '0',
+  `status` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `org_machine`
+--
+
+INSERT INTO `org_machine` (`id`, `org_id`, `machine_id`, `remarks`, `from_date_int`, `to_date_int`, `status`) VALUES
+(6, 1, '2', '', 1523457353, NULL, 1),
+(7, 1, '1', 'Machine Not Working', 1523457578, 1523466240, 2),
+(10, 1, '1', 'no', 1523466126, 1523538950, 2),
+(13, 2, '1', '', 1523538975, 1523539001, 2),
+(14, 1, '1', '', 1523539039, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -1540,9 +1629,9 @@ CREATE TABLE `permission_role` (
 --
 
 INSERT INTO `permission_role` (`permission_id`, `role_id`) VALUES
-(2, 1),
 (1, 2),
 (1, 3),
+(2, 1),
 (2, 3);
 
 -- --------------------------------------------------------
@@ -1554,10 +1643,18 @@ INSERT INTO `permission_role` (`permission_id`, `role_id`) VALUES
 CREATE TABLE `post` (
   `id` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `active` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `post`
+--
+
+INSERT INTO `post` (`id`, `name`, `created_at`, `updated_at`, `active`) VALUES
+(1, 'Mayor', '2018-02-27 15:49:39', '2018-02-27 10:04:39', 1),
+(2, 'Upa Mayor', '2018-02-27 15:48:46', '2018-02-27 10:03:46', 1);
 
 -- --------------------------------------------------------
 
@@ -1594,6 +1691,14 @@ CREATE TABLE `role_user` (
   `role_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Dumping data for table `role_user`
+--
+
+INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
+(1, 1),
+(1, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -1604,6 +1709,9 @@ CREATE TABLE `users` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `phone` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `wesite` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1614,9 +1722,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Company', 'admin@admin.com', '$2y$10$oFO8hQxBfmo3FuAeDt0UTuZCTFwps5TXhGly25CQL3sJy98UJSS9m', NULL, '2017-07-16 03:56:38', '2017-07-16 03:56:38'),
-(2, 'Truste Technology', 'tt@sf.com', '$2y$10$i1o3lnaUq2yWWLMNpSXtuuJH7AJkgBnaE5ZdsvcFIJhfHXn0Xqp0O', NULL, '2018-02-01 23:51:14', '2018-02-01 23:51:14');
+INSERT INTO `users` (`id`, `name`, `email`, `address`, `phone`, `wesite`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+(1, 'Admin Company', 'admin@admin.com', 'anamnagar', '9845807543', 'adminams.com.np', '$2y$10$TFaFlUL7rSVfLaZ9YRcU4uUCirPlFbMwBndllyRsKpClPfOjHCR6O', NULL, '2017-07-16 03:56:38', '2018-02-16 04:14:39'),
+(2, 'Truste Technology', 'tt@sf.com', 'baneshwor', '0123232332', 'www.trusteetech.com.np', '$2y$10$i1o3lnaUq2yWWLMNpSXtuuJH7AJkgBnaE5ZdsvcFIJhfHXn0Xqp0O', NULL, '2018-02-01 23:51:14', '2018-02-01 23:51:14');
 
 --
 -- Indexes for dumped tables
@@ -1635,6 +1743,25 @@ ALTER TABLE `employee`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `emp_machine`
+--
+ALTER TABLE `emp_machine`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `leave_request`
+--
+ALTER TABLE `leave_request`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `machine`
+--
+ALTER TABLE `machine`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `machine_id` (`machine_id`);
+
+--
 -- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
@@ -1644,6 +1771,18 @@ ALTER TABLE `migrations`
 -- Indexes for table `organization`
 --
 ALTER TABLE `organization`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `organization_str`
+--
+ALTER TABLE `organization_str`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `org_machine`
+--
+ALTER TABLE `org_machine`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1695,37 +1834,74 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `emp_machine`
+--
+ALTER TABLE `emp_machine`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `leave_request`
+--
+ALTER TABLE `leave_request`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+
+--
+-- AUTO_INCREMENT for table `machine`
+--
+ALTER TABLE `machine`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `organization`
 --
 ALTER TABLE `organization`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `organization_str`
+--
+ALTER TABLE `organization_str`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `org_machine`
+--
+ALTER TABLE `org_machine`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
 --
 -- AUTO_INCREMENT for table `permissions`
 --
 ALTER TABLE `permissions`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT for table `post`
 --
 ALTER TABLE `post`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- Constraints for dumped tables
 --
@@ -1743,6 +1919,7 @@ ALTER TABLE `permission_role`
 ALTER TABLE `role_user`
   ADD CONSTRAINT `role_user_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `role_user_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
