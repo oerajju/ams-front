@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
-import { AuthService } from '../auth/auth.service';
+import { Observable } from 'rxjs';
 import { NotificationService } from '../../notification.service';
 import { ValidationService } from '../../validation.service';
+import { ProfileService } from './profile.service';
 
 @Component({
     moduleId: module.id,
@@ -12,43 +12,47 @@ import { ValidationService } from '../../validation.service';
 })
 
 export class ProfileComponent implements OnInit {
-    loginForm : FormGroup;
+    cpForm: FormGroup;
     model: any = {};
     disabled = false;
     error = '';
     vs = ValidationService;
-    
-    constructor(private router: Router,private AuthService: AuthService,
-            private notify:NotificationService,private fb:FormBuilder ) {
-        this.loginForm = this.fb.group({
-            email:['',[Validators.required,Validators.email]],
-            password:['', Validators.required]
+    profileData: any ={};
+
+    constructor(private notify: NotificationService, private fb: FormBuilder, private PS: ProfileService) {
+        this.cpForm = this.fb.group({
+            oldpassword: ['', [Validators.required]],
+            password: ['', Validators.required],
+             password_confirmation: ['', [Validators.required, this.vs.passwordConfirmValidator]]
         });
     }
-    ngOnInit() {}
-    // login() {
-    //     if(this.loginForm.invalid){
-    //         return ;
-    //     }
-    //     this.disabled = true;
-    //     this.model = this.loginForm.value;
-    //     this.AuthService.login(this.model.email, this.model.password)
-    //         .subscribe(result => {
-    //             if (result) {
-    //                 // login successful
-    //                 this.notify.notifySuccess("Login successful.");
-    //                 console.log(result);
-    //                 //this.router.navigate(['/']);
-    //             } else {
-    //                 // login failed
-    //                 this.error = 'Something Went Wrong.';
-    //                 this.notify.notifyError(this.error);
-    //                 this.disabled = false;
-    //             }
-    //         },error=>{
-    //             this.error = "Invalid Credentials.";
-    //             this.notify.notifyError(this.error);
-    //             this.disabled = false;
-    //         });
-    // }
+    ngOnInit() {
+        this.getProfileDtail();
+
+      }
+
+    getProfileDtail(){
+        
+        this.PS.getEmployeeInfoByUserId().subscribe((result: any) => {
+            this.profileData = result;
+          //  console.log(this.profileData);
+        });
+    }
+    submitform(){
+        this.PS.changePassword(this.cpForm.value).subscribe(
+                result => {
+                    if(result.message){
+                    this.notify.notifySuccess(result.message);
+                    this.cpForm.reset();
+                    }else
+                    {
+                     this.notify.notifyError(result.error);
+                    }
+
+                    },
+                error => {
+                    this.notify.notifyError(error.message);
+                }
+            );
+    }
 }

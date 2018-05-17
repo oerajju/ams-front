@@ -32,7 +32,9 @@ export class LeaveRequestComponent{
     vs = ValidationService;
     status = [
           {label: 'Draft', value: 0},
-          {label: 'pending', value: 1}
+          {label: 'Pending', value: 1},
+          {label: 'Approved', value: 2},
+          {label: 'Reject', value: 3}
     ]
     leave_type = [
         {label: 'Select Leave Type', value: ''},

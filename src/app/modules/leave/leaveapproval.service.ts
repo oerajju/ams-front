@@ -10,6 +10,18 @@ constructor(private api: ApiService) {}
     getList(perPage, page, searchTerm?, sortKey?, sortDir?) {
         return this.api.getList(this.path, perPage, page, searchTerm, sortKey, sortDir);
     }
+    getUsers()
+    {
+    	return this.api.get('security/users');
+    }
+    getPosts()
+    {
+    	return this.api.get('organization/post');
+    }
+    getEmployee()
+    {
+    	return this.api.get('organization/employee');
+    }
 //     create(data) {
 //         return this.api.create(this.path, data);
 //     }

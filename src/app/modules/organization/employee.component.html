@@ -17,6 +17,16 @@
                 <validation-message [control]="employeeForm.controls.orgid"></validation-message>
               </div>
             </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.postid)">
+              <label class="col-md-4 col-form-label" for="postid">Post</label>
+              <div class="col-md-8">
+                  <select class="form-control" formControlName="postid">
+                      <option value="">Select Post</option>
+                      <option *ngFor=" let item of posts | async " [value]="item.id">{{ item.name}}</option>
+                  </select>
+                <validation-message [control]="employeeForm.controls.postid"></validation-message>
+              </div>
+            </div>
             
             <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.firstname)">
               <label class="col-md-4 col-form-label" for="firstname">Firstname</label>
@@ -59,17 +69,17 @@
                   </select>
                 <validation-message [control]="employeeForm.controls.active"></validation-message>
               </div>
-            </div>
-            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.reports_to)">
+            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.reports_to)">
               <label class="col-md-4 col-form-label" for="reports_to">Reports To</label>
               <div class="col-md-8">
                   <select class="form-control" formControlName="reports_to">
                       <option value="0">Select Reports To</option>
-                      <option *ngFor=" let item of Chreports_to | async " [ngValue]="item.id">{{ item.firstname+' '+item.midname+' '+item.lastname }}</option>
+                      <option *ngFor=" let item of Chreports_to | async" [ngValue]="item.id">{{ item.name }}</option>
                   </select>
                 <validation-message [control]="employeeForm.controls.reports_to"></validation-message>
               </div>
-            </div><div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.cnt_start_date)">
+            </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(employeeForm.controls.cnt_start_date)">
               <label class="col-md-4 col-form-label" for="cnt_start_date">Contract Start Sate</label>
               <div class="col-md-8"><input type="text" class="form-control" placeholder="Contract Start Sate" formControlName="cnt_start_date">
                 <validation-message [control]="employeeForm.controls.cnt_start_date"></validation-message>

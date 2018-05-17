@@ -7,22 +7,33 @@
           <strong>Add</strong> Users
         </div>
         <div class="card-body">
-            <div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.name)">
-              <label class="col-md-4 col-form-label" for="name">Name</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Name" formControlName="name">
-                <validation-message [control]="usersForm.controls.name"></validation-message>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.orgid)">
+                <label class="col-md-4 col-form-label" for="firstname">Organization</label>
+                <div class="col-md-8">
+                    <select class="form-control" formControlName="orgid" (change)="getEmployees($event.target.value)">
+                        <option value="">Select Organization</option>
+                        <option *ngFor=" let item of orgs | async " [value]="item.id">{{ item.name}}</option>
+                    </select>
+                  <validation-message [control]="usersForm.controls.orgid"></validation-message>
+                </div>
               </div>
-            </div><div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.email)">
-              <label class="col-md-4 col-form-label" for="email">Email</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Email" formControlName="email">
-                <validation-message [control]="usersForm.controls.email"></validation-message>
-              </div>
-            </div><div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.password)">
+              <div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.empid)">
+                  <label class="col-md-4 col-form-label" for="empid">Employee</label>
+                  <div class="col-md-8">
+                      <select class="form-control" formControlName="empid">
+                          <option value="0">Select Employee</option>
+                          <option *ngFor=" let item of emps | async " [ngValue]="item.id">{{ item.name}}</option>
+                      </select>
+                    <validation-message [control]="usersForm.controls.empid"></validation-message>
+                  </div>
+                </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.password)">
               <label class="col-md-4 col-form-label" for="password">password</label>
               <div class="col-md-8"><input type="password" class="form-control" placeholder="password" formControlName="password">
                 <validation-message [control]="usersForm.controls.password"></validation-message>
               </div>
-            </div><div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.password_confirmation)">
+            </div>
+            <div class="form-group row" [ngClass]="vs.getGroupClass(usersForm.controls.password_confirmation)">
               <label class="col-md-4 col-form-label" for="password_confirmed">Confirm Password</label>
               <div class="col-md-8"><input type="password" class="form-control" placeholder="Confirm Password" formControlName="password_confirmation">
                 <validation-message [control]="usersForm.controls.password_confirmation"></validation-message>

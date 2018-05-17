@@ -4,46 +4,58 @@ import { NotificationService } from '../../notification.service';
 import { ValidationService } from '../../validation.service';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { UsersService } from './users.service';
+import { Observable } from 'rxjs';
+
 @Component({
-  moduleId: module.id,
-  templateUrl: 'users.component.html'
+    moduleId: module.id,
+    templateUrl: 'users.component.html'
 })
-export class UsersComponent implements OnInit{
-    usersForm : FormGroup;
+export class UsersComponent implements OnInit {
+    usersForm: FormGroup;
     model: any = {};
     disabled = false;
     error = '';
-    lists:any;
-    perPages = [10,20,50,100];
+    lists: any;
+    perPages = [10, 20, 50, 100];
     pagination = {
-        total:0,
-        currentPage:0,
-        perPage:0
+        total: 0,
+        currentPage: 0,
+        perPage: 0
     };
     searchTerm: string = '';
-    column : string = '';
+    column: string = '';
     isDesc: boolean = false;
     vs = ValidationService;
-    
-    
-    
-  constructor(private notify:NotificationService,
-    private fb:FormBuilder,
-    private US: UsersService,
-    private modal : NgbModal
+    orgs: any;
+    emps: any;
+
+
+    constructor(private notify: NotificationService,
+        private fb: FormBuilder,
+        private US: UsersService,
+        private modal: NgbModal
     ) {
-      this.usersForm = this.fb.group({
-          name: ['',[Validators.required]],
-          email: ['',[Validators.required, Validators.email]],
-          password: ['',[Validators.required]],
-          password_confirmation: ['',[Validators.required,this.vs.passwordConfirmValidator]]
-     });
-  }
-  ngOnInit (){
-      this.pagination.perPage = this.perPages[0];
-      //this.getList();
-  }
-  submitForm() {
+        this.usersForm = this.fb.group({
+            orgid: ['', [Validators.required]],
+            empid: ['', [Validators.required]],
+            password: ['', [Validators.required]],
+            password_confirmation: ['', [Validators.required, this.vs.passwordConfirmValidator]]
+        });
+    }
+    ngOnInit() {
+        this.pagination.perPage = this.perPages[0];
+        this.getOrgs();
+    }
+    getOrgs() {
+        this.orgs = this.US.getOrganizations();
+    }
+    getEmployees(orgid?) {
+        if (typeof orgid == 'undefined') {
+            this.emps = Observable.empty();
+        }
+        this.emps = this.US.getEmployees(orgid);
+    }
+    submitForm() {
         let id = null;
         if (this.model.hasOwnProperty('id') && this.model.id !== '') {
             id = this.model.id;
@@ -54,7 +66,7 @@ export class UsersComponent implements OnInit{
         } else {
             Object.keys(this.usersForm.controls).forEach(field => {
                 const singleFormControl = this.usersForm.get(field);
-                singleFormControl.markAsTouched({onlySelf: true});
+                singleFormControl.markAsTouched({ onlySelf: true });
             });
         }
     }
@@ -92,18 +104,18 @@ export class UsersComponent implements OnInit{
         }
     }
     //removes item from table
-    removeItem(id){
+    removeItem(id) {
         let index = this.lists.findIndex(d => d.id === id);
         if (index > -1) {
             this.lists.splice(index, 1);
         }
-        this.pagination.total = this.pagination.total-1;
+        this.pagination.total = this.pagination.total - 1;
     }
     //updates item on the table
     changeItem(data) {
         let index = this.lists.findIndex(d => d.id === data.id);
         if (index > -1) {
-             this.lists[index] = data;
+            this.lists[index] = data;
         }
     }
 
@@ -111,15 +123,16 @@ export class UsersComponent implements OnInit{
         if (this.model.hasOwnProperty('id')) {
             delete this.model.id;
         }
-        this.usersForm.get('password').enable();//setValidators([Validators.required]);
-        this.usersForm.get('password_confirmation').enable();//setValidators([Validators.required,this.vs.passwordConfirmValidator]);
+        this.usersForm.get('password').enable(); // setValidators([Validators.required]);
+        this.usersForm.get('password_confirmation').enable(); // setValidators([Validators.required,this.vs.passwordConfirmValidator]);
     }
-  getUpdateItem(id) {
+    getUpdateItem(id) {
         this.US.getEdit(id).subscribe(
             result => {
                 this.model = result;
-                let res = {...result};
+                let res = { ...result };
                 delete res['id'];
+                this.getEmployees(res.orgid);
                 this.usersForm.patchValue(res);
                 this.usersForm.get('password').disable({});
                 this.usersForm.get('password_confirmation').disable({});
@@ -129,130 +142,130 @@ export class UsersComponent implements OnInit{
             }
         );
     }
-  
-  getList(){
-      let page =1;
-      if(this.pagination.currentPage!=0){
-          page = this.pagination.currentPage;
-      }
-      this.US.getList(this.pagination.perPage,page,this.searchTerm,this.column,this.isDesc).subscribe(
-        (result:any)=>{
-            this.lists = result.data;
-            this.pagination.total = result.total;
-            this.pagination.currentPage = result.current_page;
-            ///console.log(result);
-        },
-        error=>{
-            this.notify.notifyError(this.error);
+
+    getList() {
+        let page = 1;
+        if (this.pagination.currentPage != 0) {
+            page = this.pagination.currentPage;
         }
-      );
-  }
-  
-  changePerPage (perPage:number){
-      this.pagination.perPage = perPage;
-      this.pagination.currentPage = 1;
-      this.getList();
-  }
-  
-  search (){
-      this.getList();
-  }
-  sort(column){
-      this.isDesc = this.isDesc?false:true;
-      this.column = column;
-      this.getList();
-  }
-  resetFilters(){
-      this.isDesc = false;
-      this.column = '';
-      this.searchTerm = '';
-      this.pagination.currentPage = 1;
-      this.getList();
-  }
-  
-  manageUser(userId,name){
-      let ins = this.modal.open(UserMgmtComponent);
-      ins.componentInstance.name = name;
-      ins.componentInstance.userId = userId;
-  }
-  
+        this.US.getList(this.pagination.perPage, page, this.searchTerm, this.column, this.isDesc).subscribe(
+            (result: any) => {
+                this.lists = result.data;
+                this.pagination.total = result.total;
+                this.pagination.currentPage = result.current_page;
+                ///console.log(result);
+            },
+            error => {
+                this.notify.notifyError(this.error);
+            }
+        );
+    }
+
+    changePerPage(perPage: number) {
+        this.pagination.perPage = perPage;
+        this.pagination.currentPage = 1;
+        this.getList();
+    }
+
+    search() {
+        this.getList();
+    }
+    sort(column) {
+        this.isDesc = this.isDesc ? false : true;
+        this.column = column;
+        this.getList();
+    }
+    resetFilters() {
+        this.isDesc = false;
+        this.column = '';
+        this.searchTerm = '';
+        this.pagination.currentPage = 1;
+        this.getList();
+    }
+
+    manageUser(userId, name) {
+        let ins = this.modal.open(UserMgmtComponent);
+        ins.componentInstance.name = name;
+        ins.componentInstance.userId = userId;
+    }
+
 }
 
 @Component({
-  templateUrl:'./user.mgmt.component.html'
+    templateUrl: './user.mgmt.component.html'
 })
-export class UserMgmtComponent implements OnInit{
+export class UserMgmtComponent implements OnInit {
     @Input() name;
     @Input() userId;
-    allRoles:any=[];
-    usrMgmtForm : FormGroup;
-    resetPass : FormGroup;
+    allRoles: any = [];
+    usrMgmtForm: FormGroup;
+    resetPass: FormGroup;
     vs = ValidationService;
-    constructor(public activeModal: NgbActiveModal,private us:UsersService, private notify : NotificationService, private fb:FormBuilder) {
-         this.usrMgmtForm = this.fb.group({user_id:['',[Validators.required]]});
-         this.resetPass = this.fb.group({
-            user_id:['',[Validators.required]],
-            password:['',[Validators.required]],
-         password_confirmation: ['', [Validators.required, this.vs.passwordConfirmValidator]],
-         });
+    constructor(public activeModal: NgbActiveModal, private us: UsersService, private notify: NotificationService, private fb: FormBuilder) {
+        this.usrMgmtForm = this.fb.group({ user_id: ['', [Validators.required]] });
+        this.resetPass = this.fb.group({
+            user_id: ['', [Validators.required]],
+            password: ['', [Validators.required]],
+            password_confirmation: ['', [Validators.required, this.vs.passwordConfirmValidator]],
+        });
     }
-    
-    ngOnInit(){
+
+    ngOnInit() {
         this.getAllRoles();
         this.usrMgmtForm.get('user_id').setValue(this.userId);
         this.resetPass.get('user_id').setValue(this.userId);
     }
     getAllRoles() {
-        this.us.getAllRolesByUser(this.userId).subscribe(result=>{
-           this.allRoles = result;
-           let prms :any = {user_id:[this.userId]};
-           this.usrMgmtForm = this.fb.group(prms);
-           for(let i in this.allRoles){
-               if(this.allRoles[i].uid != null){
-                   prms[this.allRoles[i].id]=[true];
-               }else{
-                   prms[this.allRoles[i].id]=[''];
-               }
-           }
-           this.usrMgmtForm = this.fb.group(prms);
-           
-        },error=>{
+        this.us.getAllRolesByUser(this.userId).subscribe(result => {
+            this.allRoles = result;
+            let prms: any = { user_id: [this.userId] };
+            this.usrMgmtForm = this.fb.group(prms);
+            for (let i in this.allRoles) {
+                if (this.allRoles[i].uid != null) {
+                    prms[this.allRoles[i].id] = [true];
+                } else {
+                    prms[this.allRoles[i].id] = [''];
+                }
+            }
+            this.usrMgmtForm = this.fb.group(prms);
+
+        }, error => {
             this.notify.notifyError(error.message);
         });
     }
-    saveUserRoles(){
+    saveUserRoles() {
         //make the form values as normal html form values
-        let values:any = {};
-        for(let i in this.usrMgmtForm.value){
-            if(this.usrMgmtForm.value[i]!=''){
-                values[i]=this.usrMgmtForm.value[i];
+        let values: any = {};
+        for (let i in this.usrMgmtForm.value) {
+            if (this.usrMgmtForm.value[i] != '') {
+                values[i] = this.usrMgmtForm.value[i];
             }
         }
-        this.us.saveRolesByUser(values).subscribe(result=>{
+        this.us.saveRolesByUser(values).subscribe(result => {
             this.notify.notifySuccess(result.message);
-        },error=>{
+        }, error => {
             this.notify.notifyError(error.message);
         });
     }
-    changePass(){
-        if (this.resetPass.valid){
+    changePass() {
+        if (this.resetPass.valid) {
             this.us.resetUserPassword(this.resetPass.value).subscribe(
-                result=>{
+                result => {
                     this.notify.notifySuccess(result.message);
                 },
-                error=>{
+                error => {
                     this.notify.notifyError(error.message);
                 }
             );
-        }else {
+        } else {
             Object.keys(this.resetPass.controls).forEach(field => {
                 const singleFormControl = this.resetPass.get(field);
-                singleFormControl.markAsTouched({onlySelf: true});
+                singleFormControl.markAsTouched({ onlySelf: true });
             });
         }
     }
-    resetForm(){
+    resetForm() {
         this.resetPass.get('user_id').setValue(this.userId);
     }
-  
+
 }

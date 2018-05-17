@@ -31,4 +31,8 @@ constructor(private api:ApiService) {}
     getEmployees(orgid){
         return this.api.get(this.path+'/list/'+orgid);
     }
+    
+    getPosts(){
+        return this.api.get('organization/post');
+    }
 }

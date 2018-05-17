@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2018 at 12:37 PM
+-- Generation Time: May 17, 2018 at 12:47 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.0.28
 
@@ -51,6 +51,52 @@ CREATE TABLE `admin_district` (
   `enterby` varchar(50) NOT NULL,
   `entrydate` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `att_detail`
+--
+
+CREATE TABLE `att_detail` (
+  `id` int(11) NOT NULL,
+  `machine_id` int(11) NOT NULL,
+  `machine_user_id` int(11) NOT NULL,
+  `checkin_time` int(11) NOT NULL,
+  `checkout_time` int(11) NOT NULL,
+  `yearen` int(11) NOT NULL,
+  `monthen` int(11) NOT NULL,
+  `dayen` int(11) NOT NULL,
+  `yearnp` int(11) DEFAULT NULL,
+  `monthnp` int(11) DEFAULT NULL,
+  `daynp` int(11) DEFAULT NULL,
+  `timestamp` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `att_log`
+--
+
+CREATE TABLE `att_log` (
+  `id` int(11) NOT NULL,
+  `machine_id` varchar(50) NOT NULL,
+  `machine_user_id` varchar(50) NOT NULL,
+  `att_time` varchar(100) NOT NULL,
+  `att_type` varchar(20) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `att_log`
+--
+
+INSERT INTO `att_log` (`id`, `machine_id`, `machine_user_id`, `att_time`, `att_type`, `created_at`) VALUES
+(1, '123453', '64', '5-12-2018 2:18:98', 'IN', '2018-05-12 08:44:11'),
+(2, '123453', '64', '5-12-2018 5:18:98', 'OUT', '2018-05-12 08:45:02'),
+(4, '123453', '65', '5-12-2018 09:55:98', 'IN', '2018-05-12 09:51:31');
 
 -- --------------------------------------------------------
 
@@ -1406,17 +1452,20 @@ CREATE TABLE `employee` (
   `reports_to` int(11) DEFAULT '0',
   `cnt_start_date` int(11) DEFAULT '0',
   `cnt_term_date` int(11) DEFAULT '0',
-  `orgid` int(11) NOT NULL
+  `orgid` int(11) NOT NULL,
+  `postid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `employee`
 --
 
-INSERT INTO `employee` (`id`, `firstname`, `midname`, `lastname`, `address`, `phone`, `email`, `active`, `created_at`, `updated_at`, `reports_to`, `cnt_start_date`, `cnt_term_date`, `orgid`) VALUES
-(1, 'bhim', 'sh', 'sharm', 'kathmandu nepal', '2323423', 'e@mailc.com', 1, '2018-03-01 12:01:35', '2018-03-01 06:16:35', 0, 0, 0, 1),
-(2, 'bh', 'sh', 'ls', 'ad', 'ph', 'em@dm.com', 0, '2018-03-01 12:03:07', '2018-03-01 06:18:07', 3, 0, 0, 1),
-(3, 'Sangita', '', 'Sharma', 'kathmandu nepal', '2323423', 'e@mailc.com', 0, '2018-03-01 12:45:35', '2018-03-01 07:00:35', 1, 0, 0, 1);
+INSERT INTO `employee` (`id`, `firstname`, `midname`, `lastname`, `address`, `phone`, `email`, `active`, `created_at`, `updated_at`, `reports_to`, `cnt_start_date`, `cnt_term_date`, `orgid`, `postid`) VALUES
+(1, 'bhim', 'sh', 'sharm', 'kathmandu nepal', '2323423', 'e@mailc.com', 1, '2018-05-12 06:19:47', '2018-05-12 00:34:47', 0, 0, 0, 1, 1),
+(2, 'bh', 'sh', 'ls', 'ad', 'ph', 'em@dm.com', 0, '2018-03-01 12:03:07', '2018-03-01 06:18:07', 3, 0, 0, 1, NULL),
+(3, 'Sangita', '', 'Sharma', 'kathmandu nepal', '2323423', 'e@mailcc.com', 0, '2018-05-13 11:22:15', '2018-05-13 05:37:15', 1, 0, 0, 1, 2),
+(4, 'Admin', '', 'Company', 'baglung', '9843334343', 'admin@admin.com', 0, '2018-05-15 01:17:17', '2018-05-15 01:17:17', 0, 0, 0, 3, 2),
+(5, 'Truste', '', 'Technology', 'baglung', '98123212323', 'tt@sf.com', 0, '2018-05-15 02:13:23', '2018-05-15 02:13:23', 4, 0, 0, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -1451,7 +1500,7 @@ INSERT INTO `emp_machine` (`id`, `org_id`, `machine_id`, `emp_id`, `machine_user
 
 CREATE TABLE `leave_request` (
   `id` int(11) NOT NULL,
-  `emp_id` varchar(255) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
   `leave_type` varchar(15) NOT NULL,
   `reason` varchar(255) NOT NULL,
   `date_from` date NOT NULL,
@@ -1464,11 +1513,14 @@ CREATE TABLE `leave_request` (
 -- Dumping data for table `leave_request`
 --
 
-INSERT INTO `leave_request` (`id`, `emp_id`, `leave_type`, `reason`, `date_from`, `date_to`, `day_count`, `status`) VALUES
-(49, '1', '1', 'aaaaa', '2018-04-27', '2018-04-30', 4, '1'),
-(50, '1', '1', 'I feel bored today', '2018-04-26', '2018-04-30', 5, '0'),
-(51, '1', '2', 'asdssd', '2018-05-09', '2018-05-16', 8, '1'),
-(52, '1', '2', 'sdsafd', '2018-05-29', '2018-06-05', 8, '0');
+INSERT INTO `leave_request` (`id`, `user_id`, `leave_type`, `reason`, `date_from`, `date_to`, `day_count`, `status`) VALUES
+(53, '4', '1', 'sorry', '2018-05-15', '2018-05-16', 2, '2'),
+(54, '3', '1', 'aaaaaaa', '2018-05-17', '2018-05-18', 2, '2'),
+(55, '3', '2', 'aaaaaaaa', '2018-05-16', '2018-05-18', 3, '2'),
+(56, '2', '2', 'feel bored today', '2018-05-15', '2018-05-17', 3, '2'),
+(57, '5', '3', 'unlucky today', '2018-05-17', '2018-05-18', 2, '1'),
+(58, '5', '1', 'ssssssss', '2018-05-16', '2018-05-17', 2, '0'),
+(59, '5', '1', 'aaaa', '2018-05-16', '2018-05-21', 6, '2');
 
 -- --------------------------------------------------------
 
@@ -1517,6 +1569,37 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (2, '2014_10_12_100000_create_password_resets_table', 1),
 (3, '2017_01_01_104238_entrust_setup_tables', 2),
 (4, '2018_01_29_075936_entrust_setup_tables', 3);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `month_list`
+--
+
+CREATE TABLE `month_list` (
+  `monthid` int(11) NOT NULL,
+  `monthnp` varchar(7) CHARACTER SET utf8 NOT NULL,
+  `monthen` varchar(8) CHARACTER SET utf8 NOT NULL,
+  `orders` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `month_list`
+--
+
+INSERT INTO `month_list` (`monthid`, `monthnp`, `monthen`, `orders`) VALUES
+(1, 'बैशाख', 'Baishakh', 10),
+(2, 'जेठ', 'Jestha', 11),
+(3, 'असार', 'Ashar', 12),
+(4, 'साउन', 'Sawan', 1),
+(5, 'भदौ', 'Bhadra', 2),
+(6, 'आस्बिन', 'Asween', 3),
+(7, 'कार्तिक', 'Kartik', 4),
+(8, 'मार्ग', 'Marga', 5),
+(9, 'पौष', 'Poush', 6),
+(10, 'माघ', 'Magh', 7),
+(11, 'फागुन', 'falgun', 8),
+(12, 'चैत्र', 'Chaitra', 9);
 
 -- --------------------------------------------------------
 
@@ -1691,14 +1774,6 @@ CREATE TABLE `role_user` (
   `role_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Dumping data for table `role_user`
---
-
-INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
-(1, 1),
-(1, 2);
-
 -- --------------------------------------------------------
 
 --
@@ -1709,26 +1784,39 @@ CREATE TABLE `users` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `phone` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `wesite` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `orgid` int(11) DEFAULT NULL,
+  `empid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `address`, `phone`, `wesite`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Admin Company', 'admin@admin.com', 'anamnagar', '9845807543', 'adminams.com.np', '$2y$10$TFaFlUL7rSVfLaZ9YRcU4uUCirPlFbMwBndllyRsKpClPfOjHCR6O', NULL, '2017-07-16 03:56:38', '2018-02-16 04:14:39'),
-(2, 'Truste Technology', 'tt@sf.com', 'baneshwor', '0123232332', 'www.trusteetech.com.np', '$2y$10$i1o3lnaUq2yWWLMNpSXtuuJH7AJkgBnaE5ZdsvcFIJhfHXn0Xqp0O', NULL, '2018-02-01 23:51:14', '2018-02-01 23:51:14');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`, `orgid`, `empid`) VALUES
+(2, 'Truste Technology', 'tt@sf.com', '$2y$10$p2sMkGQYMYtQ3FsA/G7eZuVtogQ9Mmg/9eQQ1OwxsAIb.1INyWxdC', NULL, '2018-02-01 23:51:14', '2018-05-15 02:18:01', 3, 5),
+(3, 'bhim sh sharm', 'e@mailc.com', '$2y$10$pDH1ixczKocmQrJuTQe5QOzLnrK.UP9UvIP6RlI96i4UepxveqvNu', NULL, NULL, '2018-05-15 00:45:15', 1, 1),
+(4, 'Sangita  Sharma', 'e@mailcc.com', '$2y$10$c9y9v1jyKh9QiGsG2Ra0G.WgS0g4ZwdAh2gBck9eOITW8ZuB0Li/.', NULL, NULL, '2018-05-14 11:29:13', 1, 3),
+(5, 'Admin  Company', 'admin@admin.com', '$2y$10$HkoYeL/GlNwJDvhCsJAg8OJKm2ZBftrPgz8jxvAnJI7LDuLFY7Ez.', NULL, NULL, NULL, 3, 4);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `att_detail`
+--
+ALTER TABLE `att_detail`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `att_log`
+--
+ALTER TABLE `att_log`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `district`
@@ -1766,6 +1854,12 @@ ALTER TABLE `machine`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `month_list`
+--
+ALTER TABLE `month_list`
+  ADD PRIMARY KEY (`monthid`);
 
 --
 -- Indexes for table `organization`
@@ -1831,10 +1925,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `att_detail`
+--
+ALTER TABLE `att_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `att_log`
+--
+ALTER TABLE `att_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `emp_machine`
@@ -1846,7 +1952,7 @@ ALTER TABLE `emp_machine`
 -- AUTO_INCREMENT for table `leave_request`
 --
 ALTER TABLE `leave_request`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `machine`
@@ -1900,7 +2006,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

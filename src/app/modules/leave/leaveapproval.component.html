@@ -4,7 +4,7 @@
  <div class="col-md-12">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Role List
+          <i class="fa fa-align-justify"></i> Leave List
         </div>
         <div class="card-body">
             <div class="input-group">
@@ -19,23 +19,23 @@
             
           <table class="table table-bordered table-striped table-sm tbl-sortable">
             <thead>
-                <tr><th>#</th><th>Name<i class="fa" aria-hidden="true"> </i></th><th>Post<i class="fa"  aria-hidden="true"> </i></th><th>Date from<i class="fa" aria-hidden="true"> </i></th><th>Date To</th><th>Leave Type</th><th colspan="3">Action</th>
+                <tr><th>#</th><th (click)="sort('uname')">Name <i class="fa" [ngClass]="{'fa-sort': column != 'uname', 'fa-sort-asc': (column == 'uname' && isDesc), 'fa-sort-desc': (column == 'uname' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('postname')">Post <i class="fa" [ngClass]="{'fa-sort': column != 'postname', 'fa-sort-asc': (column == 'postname' && isDesc), 'fa-sort-desc': (column == 'postname' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('ldfrom')">Date From <i class="fa" [ngClass]="{'fa-sort': column != 'ldfrom', 'fa-sort-asc': (column == 'ldfrom' && isDesc), 'fa-sort-desc': (column == 'ldfrom' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('ldto')">Date To <i class="fa" [ngClass]="{'fa-sort': column != 'ldto', 'fa-sort-asc': (column == 'ldto' && isDesc), 'fa-sort-desc': (column == 'ldto' && !isDesc) }" aria-hidden="true"> </i></th><th (click)="sort('ltype')">Leave Type <i class="fa" [ngClass]="{'fa-sort': column != 'ltype', 'fa-sort-asc': (column == 'ltype' && isDesc), 'fa-sort-desc': (column == 'ltype' && !isDesc) }" aria-hidden="true"> </i></th><th colspan="3">Action</th>
 </tr>
             </thead>
             <tbody>
-              <tr *ngFor=" let item of lists; let i = index; "><td>{{i+1}}</td><td></td><td></td><td>{{item.date_from}}</td><td>{{item.date_to}}</td><td></td><td><a href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i> View</a></td><td><a href="javascript:void(0)"><i class="fa fa-check success" aria-hidden="true" style="color:green;"></i> Approve</a></td><td><a href="javascript:void(0)"><i class="fa fa-remove" style="color:darkred;"></i> Reject</a></td></tr>
+              <tr class="text-center" *ngFor=" let item of lists; let i = index; "><td>{{i+1}}</td><td>{{item.uname}}</td><td>{{item.postname}}</td><td>{{item.ldfrom}}</td><td>{{item.ldto}}</td><td><ng-container *ngFor=" let leave of leave_type"><ng-template [ngIf]="leave.value==item.ltype">{{leave.label}}</ng-template></ng-container></td><td><a href="javascript:void(0)"><i class="fa fa-edit alert-danger"></i> View</a></td><td><ng-template [ngIf]="item.lstatus== 2 ">Approved</ng-template><ng-template [ngIf]="item.lstatus== 3">Rejected</ng-template><ng-template [ngIf]="item.lstatus== 1"><a class="pull-left" (click) ="postApproveStatus(item.id,'2')" href="javascript:void(0)" ><i class="fa fa-check success" aria-hidden="true" style="color:green;"></i> Approve </a><a class="pull-right" (click) ="postApproveStatus(item.id,'3')" href="javascript:void(0)"><i class="fa fa-remove" style="color:darkred;"></i> Reject</a></ng-template></td></tr>
             </tbody>
           </table>
             <div class="row">
                 <div class="col-md-6 form-group">
-                  <!--   <page-helper [totalItems]= "pagination.total"
+                    <page-helper [totalItems]= "pagination.total"
                         [currentPage]="pagination.currentPage"
                         [perPage]="pagination.perPage"
                         [pagesToShow]="perPages"
-                        (update)= "changePerPage($event)" > </page-helper> -->
+                        (update)= "changePerPage($event)" > </page-helper>
                 </div>
                 <div class="col-md-6">
-                  <!--   <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination> -->
+                    <ngb-pagination [size]="sm" [collectionSize]="pagination.total" [(page)]="pagination.currentPage" [boundaryLinks]="true" [pageSize]="pagination.perPage" (pageChange)="getList()"></ngb-pagination>
                 </div>
                 
             </div>

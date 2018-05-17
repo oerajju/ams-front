@@ -18,33 +18,6 @@ export const navigation = [
     name: 'Local Operations'
   },
   {
-    name: 'Employer Setup',
-    url: '/employer',
-    icon: 'icon-light',
-    children: [
-      {
-        name: 'Employer Type',
-        url: '/employer/type',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Employer Size',
-        url: '/employer/size',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Working Area/Category',
-        url: '/employer/category',
-        icon: 'icon-puzzle'
-      },
-      {
-        name: 'Employer',
-        url: '/employer',
-        icon: 'icon-puzzle'
-      }
-    ]
-  },
-  {
     name: 'Organization Setup',
     url: '/organization',
     icon: 'fa fa-building-o',

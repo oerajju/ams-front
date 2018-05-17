@@ -27,6 +27,7 @@ export class EmployeeComponent implements OnInit{
     isDesc: boolean = false;
     vs = ValidationService;
     orgs:any;
+    posts:any;
     Chactive = [{label:'Enabled',value:1},{label:'Disabled',value:0},{label:'Expired',value:2}];
     Chreports_to:any;
 
@@ -38,6 +39,7 @@ export class EmployeeComponent implements OnInit{
     ) {
       this.employeeForm = this.fb.group({
           orgid:['',[Validators.required]],
+          postid:['',[Validators.required]],
           firstname: ['',[Validators.required]],
           midname: [''],
           lastname: ['',[Validators.required]],
@@ -53,9 +55,13 @@ export class EmployeeComponent implements OnInit{
   ngOnInit (){
       this.pagination.perPage = this.perPages[0];
       this.getOrgs();
+      this.getPosts();
   }
   getOrgs(){
       this.orgs = this.ES.getOrganizations();
+  }
+  getPosts(){
+      this.posts = this.ES.getPosts();
   }
   getEmployees(orgid?){
     if(typeof orgid == 'undefined'){

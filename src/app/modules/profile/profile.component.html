@@ -31,7 +31,7 @@
     position: relative;
     margin-right: 10px;
 
-    }/*
+    }*/
 </style>
 
 <div class="animated fadeIn row">
@@ -39,86 +39,40 @@
         <ngb-tabset>
             <ngb-tab title="Profile">
                 <ng-template ngbTabContent>
-                    
+
                     <div class="card">
                         <div class="card-header">
-                            Your Profile <span class="pull-right" style="cursor: pointer"><i class="fa fa-pencil"></i></span>
+                            Your Profile
+                            <span class="pull-right" style="cursor: pointer">
+                                <i class="fa fa-pencil"></i>
+                            </span>
                         </div>
-                         <div class="card-body col-md-8 text-center">
-                            <li class="list-group-item">
-            <div class="form-group row" >
-               
-              <label class="col-md-4 col-form-label" for="name">Name</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Name"  disabled>
-                <!-- <validation-message ></validation-message> -->
-              </div>
-            </div></li>
-        <!--  <li class="list-group-item">
-            <div class="form-group row">
-             <label class="col-md-4 col-form-label" for="alt_name">Alt. Name</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Alt. Name" formControlName="alt_name">
-                <validation-message"></validation-message>
-              </div>
-            </div>  </li>   -->
-            <li class="list-group-item">        
-              <div class="form-group row">
-              <label class="col-md-4 col-form-label" for="address">Address</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Address" >
-                <!-- <validation-message [control]="employerForm.controls.address"></validation-message> -->
-              </div>
-            </div></li>
-            <li class="list-group-item">
-            <div class="form-group row">
-              <label class="col-md-4 col-form-label" for="phone">Phone</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Phone" >
-              </div>
-            </div></li>
-            <li class="list-group-item">
-            <div class="form-group row">
-              <label class="col-md-4 col-form-label" for="email">Email</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Email" >
-                <!-- <validation-message [control]="employerForm.controls.email"></validation-message> -->
-              </div>
-            </div></li>
-            <li class="list-group-item">
-            <div class="form-group row">
-              <label class="col-md-4 col-form-label" for="website">Website</label>
-              <div class="col-md-8"><input type="text" class="form-control" placeholder="Website" >
-                <!-- <validation-message [control]="employerForm.controls.website"></validation-message> -->
-              </div>
-            </div>
-        </li>
-        </div>
-        <!-- formControlName="website" formControlName="phone" formControlName="address" formControlName="name" -->
-                        <!-- <div class="card-block">
+                        <div class="card-body col-md-12 ">
                             <ul class="list-group">
-                               
-                                <li class="list-group-item"><i class="icon-phone icons h4  inline m-t-2"></i></li>
-                                <li class="list-group-item"><i class="icon-printer icons h4 inline m-t-2"></i> </li>
-                                <li class="list-group-item"><i class="icon-bag icons h4 inline m-t-2"></i> </li>
-                                <li class="list-group-item"><i class="icon-globe icons h4 inline m-t-2"></i> <a></a></li>
-                            </ul> 
-                        </div> -->
+                                <table class="table table-bordered">
+                                     <tr>
+                                        <td>Name</td>
+                                        <td>{{profileData.firstname}} {{profileData.midname}} {{profileData.lastname}}</td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>Email</td>
+                                        <td>{{profileData.email}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Phone</td>
+                                        <td>{{profileData.phone}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Address</td>
+                                        <td>{{profileData.address}}</td>
+                                    </tr>
+                                </table>
+                            </ul>
+                        </div>
                     </div>
                 </ng-template>
             </ngb-tab>
-           <!--  <ngb-tab>
-                <ng-template ngbTabTitle><b>Manage</b> Contact Person </ng-template>
-                <ng-template ngbTabContent>
-                    <div class="card">
-                        <div class="card-header">
-                            Contact  Person Information <span class="pull-right" style="cursor: pointer"><i  class="fa fa-pencil"></i></span>
-                        </div>
-                        <div class="card-block">
-                            <ul class="list-group">
-                                <li class="list-group-item"><i class="icon-user icons h4 inline m-t-2"></i> </li>
-                                <li class="list-group-item"><i class="icon-envelope icons h4 inline m-t-2"></i> </li>
-                                <li class="list-group-item"><i class="icon-phone icons h4  inline m-t-2"></i></li>
-                            </ul> 
-                        </div>
-                    </div>
-                </ng-template>
-            </ngb-tab> -->
             <ngb-tab title="Change Password">
                 <ng-template ngbTabContent>
                     <div class="card">
@@ -126,23 +80,29 @@
                             Change Password
                         </div>
                         <div class="card-block">
-                            <form class="form-horizontal col-md-6">
-                                <div class="form-group">
-                                    <input class="form-control" type="password"  placeholder="Old Password">
-
+                            <form class="form-horizontal col-md-6" [formGroup]="cpForm" (ngSubmit)="submitform()">
+                                <div class="form-group row" [ngClass]="vs.getGroupClass(cpForm.controls.oldpassword)">
+                                    <label class="col-md-4 col-form-label" for="password">Old Password</label>
+                                    <div class="col-md-8">
+                                        <input type="password" class="form-control" placeholder="Old Password" formControlName="oldpassword">
+                                        <validation-message [control]="cpForm.controls.oldpassword"></validation-message>
+                                    </div>
+                                </div>
+                                <div class="form-group row" [ngClass]="vs.getGroupClass(cpForm.controls.password)">
+                                    <label class="col-md-4 col-form-label" for="password">New Password</label>
+                                    <div class="col-md-8">
+                                        <input type="password" class="form-control" placeholder="New Password" formControlName="password">
+                                        <validation-message [control]="cpForm.controls.password"></validation-message>
+                                    </div>
+                                </div>
+                                <div class="form-group row" [ngClass]="vs.getGroupClass(cpForm.controls.password_confirmation)">
+                                    <label class="col-md-4 col-form-label" for="password_confirmation">Confirm Password</label>
+                                    <div class="col-md-8">
+                                        <input type="password" class="form-control" placeholder="Confirm Password" formControlName="password_confirmation">
+                                        <validation-message [control]="cpForm.controls.password_confirmation"></validation-message>
+                                    </div>
                                 </div>
                                 <div class="form-group">
-
-                                    <input class="form-control" type="password"  placeholder="New Password">
-
-                                </div>
-                                <div class="form-group">
-
-                                    <input class="form-control" type="password"  placeholder="Confirm Password">
-
-                                </div>
-                                <div class="form-group">
-
                                     <input class="btn btn-success" type="submit" value="Submit">
                                 </div>
                             </form>

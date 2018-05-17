@@ -5,6 +5,7 @@ import { AuthGuard, LoginGuard } from './modules/auth/auth.guard';
 import { LoginComponent } from './modules/auth/login.component';
 
 // Import Containers
+
 import {
   FullLayoutComponent,
   SimpleLayoutComponent
@@ -23,7 +24,6 @@ export const routes: Routes = [
     component: LoginComponent,
     canActivate: [LoginGuard]
   },
-  
   {
     path: '',
     component: FullLayoutComponent,
